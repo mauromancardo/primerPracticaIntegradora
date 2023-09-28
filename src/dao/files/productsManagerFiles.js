@@ -63,6 +63,5 @@ export class ProductsManagerFiles{
     };
 
     updateProduct(){};
-
     deleteProduct(){};
 };

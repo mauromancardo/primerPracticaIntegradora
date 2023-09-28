@@ -43,7 +43,5 @@ export class CartsManagerFiles{
         }
     };
 
-    async addProduct(cartId, productId){
-        
-    }
+    async addProduct(cartId, productId){};
 };

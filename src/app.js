@@ -3,6 +3,7 @@ import { __dirname } from "./utils.js";
 import path from "path";
 import {engine} from "express-handlebars";
 import {Server} from "socket.io";
+import { connectDB } from "./config/dbConnection.js";
 
 const port = 8080;
 const app = express();
@@ -16,6 +17,9 @@ app.use(express.urlencoded({extended:true}));
 const httpServer = app.listen(port,()=>console.log(`Servidor ejecutandose en el puerto ${port}`));
 //Servidor de websocket
 const io = new Server(httpServer);
+
+//conexión base de datos
+connectDB();
 
 //configuración de handlebars
 app.engine('.hbs', engine({extname: '.hbs'}));
