@@ -2,7 +2,6 @@ export class ProductsManagerMemory{
     constructor(){
         this.products = [];
     };
-
     async createProduct(productInfo){};
     async getProducts(){};
     async getProductById(productId){};

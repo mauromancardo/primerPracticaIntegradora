@@ -1,5 +1,6 @@
 import { Error } from "mongoose";
 import {productsModel} from "./models/products.model.js"
+import mongoose from "mongoose";
 export class ProductsManagerMongo{
     constructor(){
 this.model = productsModel;
@@ -24,6 +25,8 @@ this.model = productsModel;
          }
          
     };
+   
+
     async getProductById(productId){
         try {
           const result = await this.model.findById(productId);
@@ -36,24 +39,32 @@ this.model = productsModel;
     };
     async updateProduct(productId, newProductInfo){
          try {
-           const result = await this.model.findByIdAndUpdate({productId},{newProductInfo},{new:true});
-           if (result){
+           const result = await this.model.findByIdAndUpdate(productId,newProductInfo,{new:true});
+           /* console.log(result) */
+           if (!result){
             throw new Error("no se pudo encontr el producto para actualizar");
-           };
+           } else{
+            return result;
+           }
          } catch (error) {
            console.log("updateProduct", error.message);
            throw new Error("no se pudo actualizar el producto");
          }
+         
     };
-    async deleteProduct(productId){
-        try {
-          const result = await this.model.findByIdAndDelete({ productId},);
-          if (result) {
-            throw new Error("no se pudo encontr el producto para eliminar");
-          }
-        } catch (error) {
-          console.log("deleteProduct", error.message);
-          throw new Error("no se pudo eliminar el producto");
-        }
-    };
-};
+
+
+async deleteProduct(productId) {
+  try {
+    const ObjectId = mongoose.Types.ObjectId;
+    const productObjectId = new ObjectId(productId);
+    const result = await this.model.findByIdAndDelete(productObjectId);
+    if (!result) {
+      throw new Error("No se pudo encontrar el producto para eliminar");
+    }
+  } catch (error) {
+    console.log("deleteProduct", error.message);
+    throw new Error("No se pudo eliminar el producto");
+  }
+}};
+
