@@ -46,7 +46,7 @@ export class CartsManagerMongo {
         throw new Error("cart not found");
       } else {
         return result;
-      }
+      } 
     } catch (error) {
       console.log(`update cart error: ${error.message}`);
       throw new Error(`update cart error: ${error.message}`);

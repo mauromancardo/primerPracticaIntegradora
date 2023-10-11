@@ -3,9 +3,16 @@ import { __dirname } from "./utils.js";
 import path from "path";
 import {engine} from "express-handlebars";
 import {Server} from "socket.io";
+import { viewsRouter } from "./routes/views.routes.js"; 
+ import { productsRouter } from "./routes/products.routes.js";
+
+import { cartsRouter } from "./routes/carts.routes.js";
+import { chatsService, productsService } from "./dao/index.js";
+import { chatsRouter } from "./routes/chat.routes.js";
 import { connectDB } from "./config/dbConnection.js";
-import { productsRouter } from "./routes/products.routes.js";
+ 
 import {chatService} from "./dao/index.js";
+
 const port = 8080;
 const app = express();
 
@@ -28,10 +35,14 @@ app.set('view engine', '.hbs');
 app.set('views', path.join(__dirname,"/views"));
 
 //routes
-app.use("/api/products",productsRouter)
+app.use(viewsRouter);
+app.use("/api/products", productsRouter);
+/* app.use("/api/carts", cartsRouter);
+app.use("/api/chats", chatsRouter); */
 
 //socket server
 io.on("connection", async(socket)=>{
     console.log("cliente conectado");
     // ---
 });
+
