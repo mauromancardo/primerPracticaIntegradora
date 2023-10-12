@@ -37,12 +37,80 @@ app.set('views', path.join(__dirname,"/views"));
 //routes
 app.use(viewsRouter);
 app.use("/api/products", productsRouter);
-/* app.use("/api/carts", cartsRouter);
-app.use("/api/chats", chatsRouter); */
+app.use("/api/carts", cartsRouter);
+app.use("/api/chats", chatsRouter);
 
 //socket server
-io.on("connection", async(socket)=>{
-    console.log("cliente conectado");
-    // ---
+io.on("connection", async (socket) => {
+  try {
+    console.log("client connected");
+    const products = await productsService.getProducts();
+    socket.emit("products", products);
+
+    socket.on("addProduct", async (dataProduct) => {
+      try {
+        const productToSave = {
+          title: dataProduct.title,
+          description: dataProduct.description,
+          price: dataProduct.price,
+          code: dataProduct.code,
+          stock: dataProduct.stock,
+          status: dataProduct.status,
+          category: dataProduct.category,
+          thumbnail: dataProduct.thumbnail,
+        };
+        await productsService.addProduct(productToSave);
+
+        const updatedProducts = await productsService.getProducts();
+        io.emit("products", updatedProducts);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+
+    socket.on("deleteProduct", async (id) => {
+      try {
+        await productsService.deleteProduct(id);
+        const updatedProducts = await productsService.getProducts();
+
+        socket.emit("products", updatedProducts);
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
+///CHAT
+let chat = [];
+io.on("connection", (socket) => {
+  socket.emit("chatHistory", chat);
+  socket.on("messageChat", async (data) => {
+    try {
+      chat.push(data);
+      console.log(chat);
+
+      io.emit("chatHistory", chat);
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
+  socket.on("authenticated", (data) => {
+    socket.broadcast.emit("newUser", `${data} is connected`);
+  });
+
+  socket.on("messageChat", async (data) => {
+    try {
+      if (data.message.trim() !== "") {
+        await chatsService.addMessage(data);
+        const messageDB = await chatsService.getMessages();
+        io.emit("chatHistory", messageDB);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+});

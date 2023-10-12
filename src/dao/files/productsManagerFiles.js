@@ -8,6 +8,7 @@ export class ProductsManagerFiles{
     fileExist(){
         return fs.existsSync(this.pathFile);
     }
+    
 
     async createProduct(productInfo){
         try {

@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    thumbnail:String,
+    
 });
 
 export const productsModel = mongoose.model(productsCollection, productSchema);

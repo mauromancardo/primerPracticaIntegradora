@@ -12,7 +12,6 @@ router.get("/", async (req, res) => {
     res.json({ error: error.message });
   }
 });
-
 //add cart
 router.post("/", async (req, res) => {
   try {
